@@ -1,24 +1,40 @@
 package com.example.myapplication;
 
 import android.os.Bundle;
+import android.util.Log;
+import android.widget.TextView;
 
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.graphics.Insets;
-import androidx.core.view.ViewCompat;
-import androidx.core.view.WindowInsetsCompat;
+
+import com.example.analyticslibrary.Analytics;
+
+import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
-
+    TextView textView;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         EdgeToEdge.enable(this);
         setContentView(R.layout.activity_main);
-        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
-            Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
-            v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
-            return insets;
-        });
+       findView();
+       initViews();
+
     }
+
+
+    private void findView() {
+        textView = findViewById(R.id.Textview);
+    }
+    private void initViews() {
+        Analytics.getNamesFromServer(new Analytics.CallBack() {
+            @Override
+            public void onResult(List<String> names) {
+                Log.d("MainActivity", "Received names: " + names);
+                textView.setText("Names: " + names.toString());
+            }
+        }, Analytics.Gender.female);
+    }
+
 }
